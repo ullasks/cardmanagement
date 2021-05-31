@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.cms.cardmanagement.constants.CreditCardConstants;
 import com.cms.cardmanagement.exception.InvalidCreditCardException;
@@ -22,14 +23,23 @@ public class CreditCardServiceImpl {
 
 	public MessageModel createCreditCard(CreditCardModel cardModel)
 			throws InvalidCreditCardException, TechnicalFailureException {
-		
+
 		MessageModel message = null;
 		if (null != cardModel) {
 			String invalidCreditCardExceptionMessage = CreditCardConstants.EMPTY;
-			if (!validator.isValidCreditCardLength(cardModel.getNumber())) {
-				invalidCreditCardExceptionMessage = String.format(CreditCardConstants.CARD_INVALID,
-						cardModel.getNumber());
-				throw new InvalidCreditCardException(invalidCreditCardExceptionMessage);
+			try {
+				message = validator.creditCardMandatoryCheck(cardModel);
+				if (CollectionUtils.isEmpty(message.getErrors())) {
+					boolean isValidCreditCard = validator.isValidCreditcard(cardModel.getNumber());
+					if (!isValidCreditCard) {
+						invalidCreditCardExceptionMessage = String.format(CreditCardConstants.CARD_INVALID,
+								cardModel.getNumber());
+						throw new InvalidCreditCardException(invalidCreditCardExceptionMessage);
+					}
+				}
+			} catch (InvalidCreditCardException exception) {
+				LOGGER.error("Caught Invalid CreditCard Exception!");
+				throw new InvalidCreditCardException(invalidCreditCardExceptionMessage, exception);
 			}
 		} else {
 			LOGGER.error("Caught Invalid CreditCard Exception!");
