@@ -1,0 +1,76 @@
+# cardmanagement
+please see the master branch in github
+
+Credit Card Management
+
+•	Technology stack
+
+Spring Boot 2.5.0, Java 11, maven, h2database, Mockito
+
+•	Rest End points:
+
+1)	Add Credit Card: POST http://localhost:8088/credit-cards
+with request body.
+2)	Get all Credit Cards: GET http://localhost:8088/credit-cards
+
+•	Luhn algorithm reference for credit card number validation
+
+https://en.wikipedia.org/wiki/Luhn_algorithm
+
+
+Validations & Assumptions.
+•	Credit card name, number and limit are mandatory
+
+If any of the above fields missing, then the app will show a server-side mandatory message and will not go for validation of credit card number.
+•	Credit card number validations
+
+Assumption credit card length is 13 to 19 including both.
+If the card number is not numeric or the length is not following the rule (13 to 19) then the below server-side message will display and will not validate the Luhn algorithm.
+“The Credit card number <xxxxx> is wrong! Please check the card number!”
+Where <xxxxx> is the entered credit card number.
+
+If it passed the above validations, then the Luhn validation as below.
+1.Reverse the order of the digits in the number.
+2.Taking the second, fourth ... and every other even digit and Multiply each digit by two and sum the digits if the answer is greater than nine to form partial sums for the even digits
+3.Sum up all the numbers (including the odd and even)
+If the (Sum % 10) == 0 		(modulus 10 operation) 
+Then the given card number is passing Luhn algorithm.
+
+###	If the Credit card number is already existing.
+
+During the creation of credit card, we are checking the card number is already existing or not.
+If already existing, we are throwing InvalidCreditCardException with message
+The credit card number <xxxx> is already exists!. 
+Where <xxxxx> is the entered credit card number.
+
+
+
+##### POSTMAN input and output######
+
+1) http://localhost:8088/credit-cards  POST request.
+request body: 
+{
+    "name": "Master",
+    "number":"6388498327914201",
+    "balance": 100,
+    "limit": 100001
+}
+
+output:
+{"success":"Credit card is saved successfully."}
+
+2)  http://localhost:8088/credit-cards  GET request.
+
+result::
+[
+    {
+        "name": "Master",
+        "number": "6388498327914201",
+        "balance": 100.00,
+        "limit": 100001.00
+    }
+]
+
+
+Please see the Junit5 tests in https://github.com/ullasks/cardmanagement/blob/master/src/test/java/com/cms/cardmanagement/service/CreditCardServiceImplTest.java 
+
