@@ -9,6 +9,8 @@ public class CreditCardConstants {
 	public static final String CARD_LIMIT_MANDATORY = "Please provide a valid credit card limt.";
 	public static final String CARD_NUMBER_MANDATORY = "Please provide a valid credit card number.";
 	public static final String CARD_EXISTS = "The credit card number %s is already exists!.";
+	public static final String CARD_TECHNICAL_FAILURE = "Technical failure exception occured.";
+	public static final String CARD_GENERIC_FAILURE = "Generic exception occured.";
 
 	public static final String CARD_ADD_SUCCESS_MESSAGE = "Credit card is saved successfully.";
 

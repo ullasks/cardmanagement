@@ -1,5 +1,8 @@
 package com.cms.cardmanagement.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +54,15 @@ public class CreditCardServiceImpl {
 						message.setSuccess(CreditCardConstants.CARD_ADD_SUCCESS_MESSAGE);
 					}
 				}
-			} catch (InvalidCreditCardException exception) {
+			}catch(InvalidCreditCardException exception) {
 				LOGGER.error("Caught Invalid CreditCard Exception!");
-				throw new InvalidCreditCardException(invalidCreditCardExceptionMessage, exception);
+				throw new InvalidCreditCardException(invalidCreditCardExceptionMessage,exception);
+			}catch(TechnicalFailureException exception) {
+				LOGGER.error("Caught technical failure exception!");
+				throw new TechnicalFailureException(CreditCardConstants.CARD_TECHNICAL_FAILURE,exception);
+			}catch(Exception exception) {
+				LOGGER.error("Caught generic exception!");
+				throw new TechnicalFailureException(CreditCardConstants.CARD_GENERIC_FAILURE,exception);
 			}
 		} else {
 			LOGGER.error("Caught Invalid CreditCard Exception!");
@@ -71,5 +80,17 @@ public class CreditCardServiceImpl {
 		CardMapper creditCardMapper = new CardMapper();
 		CreditCard creditCard = creditCardMapper.beanToEntity(cardModel);
 		creditCardRepository.save(creditCard);
+	}
+
+	public List<CreditCardModel> getAllCreditCards() {
+		List<CreditCard> creditCards = creditCardRepository.findAll();
+		List<CreditCardModel> creditCardModels= new ArrayList<>(); 
+		if(!CollectionUtils.isEmpty(creditCards)) {
+			CardMapper creditCardMapper = new CardMapper();
+			creditCards.forEach(creditCard -> {
+				creditCardModels.add(creditCardMapper.entityToBean(creditCard));
+			});
+		}
+		return creditCardModels;
 	}
 }

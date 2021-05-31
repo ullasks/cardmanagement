@@ -13,4 +13,13 @@ public class CardMapper {
 		creditCard.setNumber(cardModel.getNumber());
 		return creditCard;
 	}
+	
+	public CreditCardModel entityToBean(CreditCard creditCard) {
+		CreditCardModel model = new CreditCardModel();
+		model.setBalance(creditCard.getBalance());
+		model.setLimit(creditCard.getCreditLimit());
+		model.setName(creditCard.getName());
+		model.setNumber(creditCard.getNumber());
+		return model;
+	}
 }
