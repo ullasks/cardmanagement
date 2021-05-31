@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.StringUtils;
 
+import com.cms.cardmanagement.constants.CreditCardConstants;
 import com.cms.cardmanagement.exception.InvalidCreditCardException;
 import com.cms.cardmanagement.model.CreditCardModel;
 import com.cms.cardmanagement.service.validation.CreditCardValidatorServiceImpl;
@@ -30,7 +31,7 @@ public class CreditCardServiceImplTest {
 	}
 
 	@Test
-	public void createCreditCardInValid() throws InvalidCreditCardException {
+	public void inValidCreditCardlength() throws InvalidCreditCardException {
 		String cardNumber = "638849890909009327914200";
 		InvalidCreditCardException thrown = Assertions.assertThrows(InvalidCreditCardException.class, () -> {
 			CreditCardModel model = new CreditCardModel();
@@ -39,7 +40,15 @@ public class CreditCardServiceImplTest {
 		});
 		String expectedMessage = String.format("The Credit card number %s is wrong! Please check the card number!",
 				cardNumber);
-		System.out.println(thrown.getMessage());
 		Assertions.assertEquals(expectedMessage, thrown.getMessage());
+	}
+	
+	@Test
+	public void inValidCreditCardlengthNull() throws InvalidCreditCardException {
+		InvalidCreditCardException thrown = Assertions.assertThrows(InvalidCreditCardException.class, () -> {
+			CreditCardModel model = null;
+			testObj.createCreditCard(model);
+		});
+		Assertions.assertEquals(CreditCardConstants.CARD_INVALID_NULL, thrown.getMessage());
 	}
 }
