@@ -82,4 +82,23 @@ public class CreditCardServiceImplTest {
 		Assertions.assertEquals(CreditCardConstants.CARD_ADD_SUCCESS_MESSAGE, actual.getSuccess());
 		verify(mockCreditCardRepository,times(1)).save(ArgumentMatchers.any(CreditCard.class));
 	}
+	
+	@Test
+	public void createCreditCardExists() throws InvalidCreditCardException{
+		CreditCardModel model= new CreditCardModel();
+		model.setNumber("6388498327914201");
+		MessageModel message= new MessageModel();
+		Mockito.when(mockCreditCardValidatorServiceImpl.creditCardMandatoryCheck(model)).thenReturn(message);
+		Mockito.when(mockCreditCardValidatorServiceImpl.isValidCreditcard(model.getNumber())).thenReturn(true);
+		CreditCard creditCard= new CreditCard();
+		creditCard.setId(10L);
+		creditCard.setNumber("6388498327914201");
+		Mockito.when(mockCreditCardRepository.getByNumber(model.getNumber())).thenReturn(creditCard);
+		InvalidCreditCardException thrown = Assertions.assertThrows(InvalidCreditCardException.class, () -> {
+			testObj.createCreditCard(model);
+		});
+		
+		String expectedMessage = String.format(CreditCardConstants.CARD_EXISTS,model.getNumber());
+		Assertions.assertEquals(expectedMessage, thrown.getMessage());
+	}
 }

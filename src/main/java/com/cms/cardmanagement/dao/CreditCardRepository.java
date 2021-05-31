@@ -6,4 +6,6 @@ import com.cms.cardmanagement.orm.CreditCard;
 
 public interface CreditCardRepository extends JpaRepository<CreditCard,Long>{
 
+	CreditCard getByNumber(String number);
+
 }

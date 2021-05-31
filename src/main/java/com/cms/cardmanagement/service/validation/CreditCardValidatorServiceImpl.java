@@ -45,7 +45,9 @@ public class CreditCardValidatorServiceImpl {
 		// reverse the number using the modulus ( % )  and divide by 10 method.
 		LongStream reverseCardNumber = LongStream.iterate(creditCardNumber, n -> n / 10).takeWhile(n -> n > 0)
 				.map(n -> n % 10);
+		// odd numbers + even numbers( even numbers are multiplied by 2 and sum the digits) 
 		long sum = reverseCardNumber.map(i -> i * integerMultiplierSeries.nextInt()).reduce(0, (a, b) -> a + b / 10 + b % 10);
+		// if the sum % 10 is 0 then its a LUHN verified number.
 		return (sum % 10) == 0;
 	}
 

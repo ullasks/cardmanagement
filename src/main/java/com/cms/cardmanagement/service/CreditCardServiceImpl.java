@@ -40,7 +40,13 @@ public class CreditCardServiceImpl {
 						invalidCreditCardExceptionMessage = String.format(CreditCardConstants.CARD_INVALID,
 								cardModel.getNumber());
 						throw new InvalidCreditCardException(invalidCreditCardExceptionMessage);
-					}else {
+					} else {
+						CreditCard cardExisted = checkCreditCardExists(cardModel.getNumber());
+						if (cardExisted != null) {
+							invalidCreditCardExceptionMessage = String.format(CreditCardConstants.CARD_EXISTS,
+									cardModel.getNumber());
+							throw new InvalidCreditCardException(invalidCreditCardExceptionMessage);
+						}
 						saveCreditCard(cardModel);
 						message.setSuccess(CreditCardConstants.CARD_ADD_SUCCESS_MESSAGE);
 					}
@@ -55,6 +61,10 @@ public class CreditCardServiceImpl {
 		}
 
 		return message;
+	}
+
+	private CreditCard checkCreditCardExists(String number) {
+		return creditCardRepository.getByNumber(number);
 	}
 
 	private void saveCreditCard(CreditCardModel cardModel) {
