@@ -11,7 +11,6 @@ import com.cms.cardmanagement.util.NumberUtil;
 @Service
 public class CreditCardValidatorServiceImpl {
 
-	
 	public MessageModel creditCardMandatoryCheck(CreditCardModel cardModel) {
 		MessageModel message = new MessageModel();
 		if (ObjectUtils.isEmpty(cardModel.getName())) {
@@ -25,10 +24,19 @@ public class CreditCardValidatorServiceImpl {
 		}
 		return message;
 	}
-	
-	public boolean isValidCreditcard(String cardNumber){
-		return NumberUtil.isNumeric(cardNumber) && isValidCreditCardLength(cardNumber);
+
+	public boolean isValidCreditcard(String cardNumber) {
+		boolean isValid = NumberUtil.isNumeric(cardNumber) && isValidCreditCardLength(cardNumber);
+		if (isValid) {
+			isValid = creditcardBusinessValidation(cardNumber);
+		}
+		return isValid;
 	}
+
+	private boolean creditcardBusinessValidation(String cardNumber) {
+		return true;
+	}
+
 	private boolean isValidCreditCardLength(String creditCardNumber) {
 		return creditCardNumber.length() >= 13 && creditCardNumber.length() <= 19;
 	}

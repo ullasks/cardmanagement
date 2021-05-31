@@ -8,4 +8,7 @@ public class CreditCardConstants {
 	public static final String CARD_NAME_MANDATORY = "Please provide account holder's name.";
 	public static final String CARD_LIMIT_MANDATORY = "Please provide a valid credit card limt.";
 	public static final String CARD_NUMBER_MANDATORY = "Please provide a valid credit card number.";
+	
+	public static final String CARD_ADD_SUCCESS_MESSAGE = "Credit card is saved successfully.";
+
 }

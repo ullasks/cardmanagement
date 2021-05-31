@@ -7,10 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.cms.cardmanagement.constants.CreditCardConstants;
+import com.cms.cardmanagement.dao.CreditCardRepository;
 import com.cms.cardmanagement.exception.InvalidCreditCardException;
 import com.cms.cardmanagement.exception.TechnicalFailureException;
+import com.cms.cardmanagement.mapper.CardMapper;
 import com.cms.cardmanagement.model.CreditCardModel;
 import com.cms.cardmanagement.model.MessageModel;
+import com.cms.cardmanagement.orm.CreditCard;
 import com.cms.cardmanagement.service.validation.CreditCardValidatorServiceImpl;
 
 @Service
@@ -20,6 +23,8 @@ public class CreditCardServiceImpl {
 
 	@Autowired
 	private CreditCardValidatorServiceImpl validator;
+	@Autowired
+	private CreditCardRepository creditCardRepository;
 
 	public MessageModel createCreditCard(CreditCardModel cardModel)
 			throws InvalidCreditCardException, TechnicalFailureException {
@@ -35,6 +40,9 @@ public class CreditCardServiceImpl {
 						invalidCreditCardExceptionMessage = String.format(CreditCardConstants.CARD_INVALID,
 								cardModel.getNumber());
 						throw new InvalidCreditCardException(invalidCreditCardExceptionMessage);
+					}else {
+						saveCreditCard(cardModel);
+						message.setSuccess(CreditCardConstants.CARD_ADD_SUCCESS_MESSAGE);
 					}
 				}
 			} catch (InvalidCreditCardException exception) {
@@ -47,5 +55,11 @@ public class CreditCardServiceImpl {
 		}
 
 		return message;
+	}
+
+	private void saveCreditCard(CreditCardModel cardModel) {
+		CardMapper creditCardMapper = new CardMapper();
+		CreditCard creditCard = creditCardMapper.beanToEntity(cardModel);
+		creditCardRepository.save(creditCard);
 	}
 }
