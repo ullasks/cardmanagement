@@ -1,5 +1,9 @@
 package com.cms.cardmanagement.service.validation;
 
+import java.util.PrimitiveIterator.OfInt;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -34,7 +38,15 @@ public class CreditCardValidatorServiceImpl {
 	}
 
 	private boolean creditcardBusinessValidation(String cardNumber) {
-		return true;
+		Long creditCardNumber = Long.valueOf(cardNumber);
+		// create a int stream with values (1,2,1,2,1,2,1,2 ...) with the length of credit card. 
+		OfInt integerMultiplierSeries = IntStream.iterate(1, i -> 3 - i).
+				limit(cardNumber.length()).iterator();
+		// reverse the number using the modulus ( % )  and divide by 10 method.
+		LongStream reverseCardNumber = LongStream.iterate(creditCardNumber, n -> n / 10).takeWhile(n -> n > 0)
+				.map(n -> n % 10);
+		long sum = reverseCardNumber.map(i -> i * integerMultiplierSeries.nextInt()).reduce(0, (a, b) -> a + b / 10 + b % 10);
+		return (sum % 10) == 0;
 	}
 
 	private boolean isValidCreditCardLength(String creditCardNumber) {
